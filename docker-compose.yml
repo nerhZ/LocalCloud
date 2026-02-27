@@ -13,8 +13,10 @@ services:
       - db
     environment:
       - HOST=0.0.0.0
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/local
     volumes:
       - .:/app
+      - web_data:/app/node_modules
       - /mnt/AppStorage:/mnt/AppStorage
     # Dev
     command: ['bun', 'run', 'dev', '--host']
@@ -49,6 +51,24 @@ services:
     attach: false
     depends_on:
       - db
+
+  drizzle_studio:
+    container_name: drizzle_studio
+    build:
+      context: .
+      dockerfile: bun_Dockerfile
+    ports:
+      - '4983:4983'
+    depends_on:
+      - db
+    environment:
+      - HOST=0.0.0.0
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/local
+      - PORT=4983
+    volumes:
+      - .:/app
+      - web_data:/app/node_modules
+    command: ['bun', 'run', 'db:studio', '--', '--host', '0.0.0.0', '--port', '4983']
 
   nginx:
     container_name: nginx

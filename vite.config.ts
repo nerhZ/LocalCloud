@@ -5,7 +5,7 @@ import tailwindcss from '@tailwindcss/vite';
 export default defineConfig({
 	plugins: [sveltekit(), tailwindcss()],
 	server: {
-		allowedHosts: ['james-zima.monkey-dory.ts.net']
+		allowedHosts: ['james-pc.monkey-dory.ts.net']
 	},
 	resolve: process.env.VITEST
 		? {

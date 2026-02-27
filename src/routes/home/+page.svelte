@@ -25,8 +25,8 @@
 	let checkedItems: CheckedItem[] = $state([]);
 	let showFloatingButtons = $derived(checkedItems.length > 0);
 	let lastCheckedIndex: number | null = $state(null);
-	let files = $state(data.files);
-	let folders = $state(data.folders);
+	let files = $derived(data.files);
+	let folders = $derived(data.folders);
 	let combinedListForIndexing = $derived.by(() => {
 		const folderItems = (folders ?? []).map((f, i) => ({
 			id: f.id,
@@ -43,8 +43,8 @@
 		return [...folderItems, ...fileItems];
 	});
 	let currentPage: number = $state(1);
-	let totalItems: number | undefined = $state(data.totalItems);
-	let pageSize: number | undefined = $state(data.pageSize);
+	let totalItems: number | undefined = $derived(data.totalItems);
+	let pageSize: number | undefined = $derived(data.pageSize);
 	let noOfPages: number | undefined = $derived.by(() => {
 		if (totalItems && pageSize) {
 			return Math.ceil(totalItems / pageSize);
@@ -526,7 +526,7 @@
 			</div>
 		{:else}
 			<div class="flex h-[calc(100vh-100px)] flex-col">
-				<div class="flex flex-grow flex-col items-center justify-center text-center text-gray-500">
+				<div class="flex grow flex-col items-center justify-center text-center text-gray-500">
 					<img src={emptyBox} alt="No images" class="mb-5 max-w-xs opacity-25" />
 					<h1 class="text-2xl">No files stored currently...</h1>
 				</div>
