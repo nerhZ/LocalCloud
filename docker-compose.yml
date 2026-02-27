@@ -68,7 +68,7 @@ services:
     volumes:
       - .:/app
       - web_data:/app/node_modules
-    command: ['bun', 'run', 'db:studio', '--', '--host', '0.0.0.0', '--port', '4983']
+    command: ['bun', 'x', 'drizzle-kit', 'studio', '--host', '0.0.0.0', '--port', '4983']
 
   nginx:
     container_name: nginx
