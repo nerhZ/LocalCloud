@@ -45,8 +45,8 @@
 	let currentPage: number = $state(1);
              	let totalItems: number | undefined = $derived(data.totalItems);
              	let pageSize: number | undefined = $derived(data.pageSize);
-                                                                       	let noOfPages: number | undefined = $derived.by(() => {
-                                                                        		if (totalItems && pageSize) {
+	let noOfPages: number | undefined = $derived.by(() => {
+		if (totalItems && pageSize) {
 			return Math.ceil(totalItems / pageSize);
 		}
 	});
@@ -363,7 +363,7 @@
 	}
 </script>
 
-<div class="drawer lg:drawer-open">
+<div class="drawer lg:drawer-open h-full grid-rows-1">
 	<input
 		id="sidebar"
 		type="checkbox"
@@ -373,159 +373,167 @@
 			sidebarState.open = !sidebarState.open;
 		}}
 	/>
-	<div class="drawer-content flex max-w-full flex-col">
+	<div class="drawer-content flex max-w-full flex-col h-full overflow-hidden">
 		<!-- Page content here -->
 		{#if ((files ?? []).length > 0 || (folders ?? []).length > 0) && data.pageSize}
-			<div class="flex w-full justify-center">
-				<div class="w-full overflow-x-auto">
-					<table class="table w-full">
-						<thead>
-							<tr>
-								<th></th>
-								<th></th>
-								<th class="w-14 min-w-14"></th>
-								<th>Name</th>
-								<th>Type</th>
-								<th>Uploaded Date</th>
-								<th>File Size</th>
-							</tr>
-						</thead>
-						<tbody>
-							{#each folders ?? [] as folder, i (folder.name)}
-								<tr
-									class="hover:bg-base-200 cursor-pointer select-none"
-									onclick={() => {
-										goto(`?folderId=${folder.id}`);
-										checkedItems = [];
-									}}
-								>
-									<td>{data.pageSize * (currentPage - 1) + i + 1}</td>
-									<td>
-										<label>
-											<input
-												type="checkbox"
-												class="checkbox"
-												checked={checkedItems.some(
-													(ci) => ci.id === folder.id && ci.type === 'folder'
-												)}
-												onclick={(event) =>
-													toggleCheckbox(
-														{ id: folder.id, name: folder.name, type: 'folder' },
-														i, // Index within the combined list
-														event,
-														(event.target as HTMLInputElement).checked
-													)}
-											/>
-										</label></td
-									>
-									<td class="w-6 text-center align-middle">
-										<!-- Added w-6 for consistent column width -->
-										<img
-											src={folderIcon}
-											alt="Folder"
-											class="inline-block h-5 w-5 align-middle opacity-70"
-										/>
-									</td>
-									<td>{folder.name}</td>
-									<td>Folder</td>
-									<td>{new Date(folder.createdAt).toLocaleDateString()}</td>
-									<td></td>
+			<div class="flex w-full flex-col flex-1 overflow-y-auto min-h-0">
+				<div class="flex w-full justify-center">
+					<div class="w-full overflow-x-auto">
+						<table class="table w-full">
+							<thead>
+								<tr>
+									<th></th>
+									<th></th>
+									<th class="w-14 min-w-14"></th>
+									<th>Name</th>
+									<th>Type</th>
+									<th>Uploaded Date</th>
+									<th>File Size</th>
 								</tr>
-							{/each}
-							{#each files ?? [] as file, i (file.filename)}
-								<tr
-									class="hover:bg-base-200 cursor-pointer select-none"
-									onclick={() => submitFileForm(file.id)}
-								>
-									<td>{(pageSize ?? 0) * (currentPage - 1) + (folders?.length ?? 0) + i + 1}</td>
-									<td>
-										<label>
-											<input
-												type="checkbox"
-												class="checkbox"
-												checked={checkedItems.some((ci) => ci.id === file.id && ci.type === 'file')}
-												onclick={(event) =>
-													toggleCheckbox(
-														{ id: file.id, name: file.filename, type: 'file' },
-														(folders?.length ?? 0) + i, // Index within the combined list
-														event,
-														(event.target as HTMLInputElement).checked
-													)}
-											/>
-										</label></td
+							</thead>
+							<tbody>
+								{#each folders ?? [] as folder, i (folder.name)}
+									<tr
+										class="hover:bg-base-200 cursor-pointer select-none"
+										onclick={() => {
+											goto(`?folderId=${folder.id}`);
+											checkedItems = [];
+										}}
 									>
-									<!-- Icon -->
-									<td class="w-6 text-center align-middle">
-										<!-- Added w-6 for consistent column width -->
-										<img
-											src={fileIcon}
-											alt="File"
-											class="inline-block h-5 w-5 align-middle opacity-70"
-											width="100px"
-										/>
-									</td>
-									<td>{file.filename}</td>
-									<td>{capitalise(mime.getType(file.filename)?.split('/')[0] ?? 'unknown')}</td>
-									<td>{new Date(file.uploadedAt).toLocaleDateString()}</td>
-									<td>
-										{#if file.fileSize >= 1073741824}
-											{(file.fileSize / 1073741824).toFixed(2)} GB
-										{:else if file.fileSize >= 1048576}
-											{(file.fileSize / 1048576).toFixed(2)} MB
-										{:else}
-											{(file.fileSize / 1024).toFixed(2)} KB
-										{/if}
-									</td>
-								</tr>
-							{/each}
-						</tbody>
-					</table>
+										<td>{data.pageSize * (currentPage - 1) + i + 1}</td>
+										<td>
+											<label>
+												<input
+													type="checkbox"
+													class="checkbox"
+													checked={checkedItems.some(
+														(ci) => ci.id === folder.id && ci.type === 'folder'
+													)}
+													onclick={(event) =>
+														toggleCheckbox(
+															{ id: folder.id, name: folder.name, type: 'folder' },
+															i, // Index within the combined list
+															event,
+															(event.target as HTMLInputElement).checked
+														)}
+												/>
+											</label></td
+										>
+										<td class="w-6 text-center align-middle">
+											<!-- Added w-6 for consistent column width -->
+											<img
+												src={folderIcon}
+												alt="Folder"
+												class="inline-block h-5 w-5 align-middle opacity-70"
+											/>
+										</td>
+										<td>{folder.name}</td>
+										<td>Folder</td>
+										<td>{new Date(folder.createdAt).toLocaleDateString()}</td>
+										<td></td>
+									</tr>
+								{/each}
+								{#each files ?? [] as file, i (file.filename)}
+									<tr
+										class="hover:bg-base-200 cursor-pointer select-none"
+										onclick={() => submitFileForm(file.id)}
+									>
+										<td>{(pageSize ?? 0) * (currentPage - 1) + (folders?.length ?? 0) + i + 1}</td>
+										<td>
+											<label>
+												<input
+													type="checkbox"
+													class="checkbox"
+													checked={checkedItems.some((ci) => ci.id === file.id && ci.type === 'file')}
+													onclick={(event) =>
+														toggleCheckbox(
+															{ id: file.id, name: file.filename, type: 'file' },
+															(folders?.length ?? 0) + i, // Index within the combined list
+															event,
+															(event.target as HTMLInputElement).checked
+														)}
+												/>
+											</label></td
+										>
+										<!-- Icon -->
+										<td class="w-6 text-center align-middle">
+											<!-- Added w-6 for consistent column width -->
+											<img
+												src={fileIcon}
+												alt="File"
+												class="inline-block h-5 w-5 align-middle opacity-70"
+												width="100px"
+											/>
+										</td>
+										<td>{file.filename}</td>
+										<td>{capitalise(mime.getType(file.filename)?.split('/')[0] ?? 'unknown')}</td>
+										<td>{new Date(file.uploadedAt).toLocaleDateString()}</td>
+										<td>
+											{#if file.fileSize >= 1073741824}
+												{(file.fileSize / 1073741824).toFixed(2)} GB
+											{:else if file.fileSize >= 1048576}
+												{(file.fileSize / 1048576).toFixed(2)} MB
+											{:else}
+												{(file.fileSize / 1024).toFixed(2)} KB
+											{/if}
+										</td>
+									</tr>
+								{/each}
+							</tbody>
+						</table>
+					</div>
 				</div>
 			</div>
-			<div class="join fixed bottom-5 left-5 right-5 z-40 justify-center">
-				{#if noOfPages && noOfPages <= 3}
-					{#each Array(noOfPages ?? 1) as _, i}
-						<button
-							class="join-item btn btn-primary btn-lg"
-							onclick={() => {
-								fetchData(i + 1);
-							}}>{i + 1}</button
-						>
-					{/each}
-				{:else}
-					<button
-						class="join-item btn btn-lg btn-primary"
-						onclick={() => {
-							if (currentPage === 1) {
-								toastGen.addToast('You are already on the first page.', 'alert-error');
-								return;
-							}
-							fetchData(currentPage - 1);
-						}}>«</button
-					>
-					<select class="join-item btn btn-lg btn-primary select-button">
-						{#each Array(noOfPages ?? 1) as _, i}
-							<option
+			{#if data.totalItems !== undefined && data.totalItems > data.pageSize && noOfPages !== undefined && noOfPages > 1}
+				<div class="flex items-center justify-center shrink-0 bg-base-200 border-t border-base-300">
+					<div class="join">
+					{#if noOfPages && noOfPages <= 3}
+						{#each Array(noOfPages) as _, i}
+							<button
+								class="join-item btn btn-primary"
 								onclick={() => {
-									if (currentPage === noOfPages) {
-										toastGen.addToast('You are already on the last page.', 'alert-error');
-										return;
-									}
 									fetchData(i + 1);
-								}}>{i + 1}</option
+								}}>{i + 1}</button
 							>
 						{/each}
-					</select>
-					<button
-						class="join-item btn btn-primary btn-lg"
-						onclick={() => {
-							fetchData(currentPage + 1);
-						}}>»</button
-					>
-				{/if}
-			</div>
+					{:else}
+						{#if noOfPages}
+						<button
+							class="join-item btn btn-primary"
+							onclick={() => {
+								if (currentPage === 1) {
+									toastGen.addToast('You are already on the first page.', 'alert-error');
+									return;
+								}
+								fetchData(currentPage - 1);
+							}}>«</button
+						>
+						<select class="join-item btn btn-primary select-button">
+							{#each Array(noOfPages) as _, i}
+								<option
+									onclick={() => {
+										if (currentPage === noOfPages) {
+											toastGen.addToast('You are already on the last page.', 'alert-error');
+											return;
+										}
+										fetchData(i + 1);
+									}}>{i + 1}</option
+								>
+							{/each}
+						</select>
+						<button
+							class="join-item btn btn-primary"
+							onclick={() => {
+								fetchData(currentPage + 1);
+							}}>»</button
+						>
+						{/if}
+					{/if}
+				</div>
+				</div>
+			{/if}
 		{:else}
-			<div class="flex h-[calc(100vh-100px)] flex-col">
+			<div class="flex h-full flex-col">
 				<div class="flex grow flex-col items-center justify-center text-center text-gray-500">
 					<img src={emptyBox} alt="No images" class="mb-5 max-w-xs opacity-25" />
 					<h1 class="text-2xl">No files stored currently...</h1>
@@ -536,7 +544,7 @@
 	<div class="drawer-side">
 		<label for="sidebar" aria-label="close sidebar" class="drawer-overlay"></label>
 		<ul
-			class="menu bg-base-200 text-base-content lg:bg-base-100 min-h-full w-80 border-r-2 border-r-emerald-950 p-4"
+			class="menu bg-base-200 text-base-content lg:bg-base-100 min-h-full w-80 border-r-2 border-r-emerald-950 p-4 sticky top-0 self-start"
 		>
 			<!-- Sidebar content here -->
 			<li>
