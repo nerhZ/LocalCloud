@@ -43,10 +43,10 @@
 		return [...folderItems, ...fileItems];
 	});
 	let currentPage: number = $state(1);
-	let totalItems: number | undefined = $derived(data.totalItems);
-	let pageSize: number | undefined = $derived(data.pageSize);
-	let noOfPages: number | undefined = $derived.by(() => {
-		if (totalItems && pageSize) {
+             	let totalItems: number | undefined = $derived(data.totalItems);
+             	let pageSize: number | undefined = $derived(data.pageSize);
+                                                                       	let noOfPages: number | undefined = $derived.by(() => {
+                                                                        		if (totalItems && pageSize) {
 			return Math.ceil(totalItems / pageSize);
 		}
 	});

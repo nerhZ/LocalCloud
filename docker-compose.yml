@@ -39,6 +39,8 @@ services:
   db_admin:
     container_name: pgadmin
     image: dpage/pgadmin4
+    profiles:
+      - manual
     restart: always
     ports:
       - 5050:80
